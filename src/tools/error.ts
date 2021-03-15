@@ -1,11 +1,13 @@
+import { OPCODE } from '.';
+
 export default class InternalError extends Error {
-  public status: number;
   public name = 'InternalError';
 
-  public constructor(message: string, status = 500) {
+  public constructor(
+    public message: string,
+    public opcode = OPCODE.ERROR,
+    public details?: any
+  ) {
     super();
-
-    this.message = message;
-    this.status = status;
   }
 }

@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource dbModel {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator clientModel {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+model DiscountGroupModel {
+  discountGroupId String  @id @default(uuid())
+  enabled         Boolean @default(true)
+
+  name           String
+  description String
+  remainingCount Int?
+
+  platformId           String
+  discounts            DiscountModel[]
+  ratioPriceDiscount   Int?
+  staticPriceDiscount  Int?
+  staticMinuteDiscount Int?
+
+  isPenaltyIncluded       Boolean @default(false)
+  isStandardPriceIncluded Boolean @default(false)
+
+  validity Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model DiscountModel {
+  discountId String  @id @default(uuid())
+  isUsed     Boolean @default(false)
+
+  discountGroupId String
+  discountGroup   DiscountGroupModel @relation(fields: [discountGroupId], references: [discountGroupId])
+
+  platformId           String
+  ratioPriceDiscount   Int?
+  staticPriceDiscount  Int?
+  staticMinuteDiscount Int?
+
+  isPenaltyIncluded       Boolean @default(false)
+  isStandardPriceIncluded Boolean @default(false)
+
+  expiredAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
