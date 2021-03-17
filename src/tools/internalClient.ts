@@ -7,8 +7,8 @@ import {
 
 export default class InternalClient {
   public static getFranchise(
-    email: string,
-    permissions?: FranchisePermission[]
+    permissions?: FranchisePermission[],
+    email = 'system@hikick.kr'
   ): InternalFranchiseClient {
     const client = new InternalFranchiseClient({
       secretKey: process.env.HIKICK_OPENAPI_FRANCHISE_KEY || '',
@@ -21,8 +21,8 @@ export default class InternalClient {
   }
 
   public static getPlatform(
-    email: string,
-    permissions?: PlatformPermission[]
+    permissions?: PlatformPermission[],
+    email = 'system@hikick.kr'
   ): InternalPlatformClient {
     const client = new InternalPlatformClient({
       secretKey: process.env.HIKICK_OPENAPI_PLATFORM_KEY || '',

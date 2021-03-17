@@ -20,7 +20,7 @@ export default function InternalMiddleware(): Callback {
       );
     }
 
-    const key = process.env.HIKICK_OPENAPI_KICKBOARD_KEY;
+    const key = process.env.HIKICK_OPENAPI_DISCOUNT_KEY;
     if (!key || !token) {
       throw new InternalError(
         '인증이 필요한 서비스입니다.',
@@ -56,6 +56,11 @@ export default function InternalMiddleware(): Callback {
         `[Internal] [${payload.iss}] ${payload.aud} - ${req.method} ${req.originalUrl}`
       );
     } catch (err) {
+      if (process.env.NODE_ENV === 'dev') {
+        logger.error(err.message);
+        logger.error(err.stack);
+      }
+
       throw new InternalError(
         '인증이 필요한 서비스입니다.',
         OPCODE.REQUIRED_INTERNAL_LOGIN

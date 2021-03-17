@@ -1,16 +1,12 @@
-import { Callback, Wrapper, logger } from '../tools';
-import {
-  InternalError,
-  OPCODE,
-  PlatformPermission,
-} from 'openapi-internal-sdk';
+import { Callback, InternalError, OPCODE, Wrapper, logger } from '../tools';
 
 import InternalClient from '../tools/internalClient';
+import { PlatformPermission } from 'openapi-internal-sdk';
 
 export default function PlatformMiddleware(
   permissionIds: string[] = []
 ): Callback {
-  const platformClient = InternalClient.getPlatform('system@hikick.kr', [
+  const platformClient = InternalClient.getPlatform([
     PlatformPermission.ACCESS_KEYS_AUTHORIZE,
   ]);
 
