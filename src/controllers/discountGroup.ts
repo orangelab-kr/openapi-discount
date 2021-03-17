@@ -197,4 +197,17 @@ export default class DiscountGroup {
       data: { remainingCount: { decrement: 1 } },
     });
   }
+
+  public static async deleteDiscountGroup(
+    discountGroup: DiscountGroupModel
+  ): Promise<void> {
+    const { discountGroupId } = discountGroup;
+    await prisma.discountModel.deleteMany({
+      where: { discountGroup: { discountGroupId } },
+    });
+
+    await prisma.discountGroupModel.deleteMany({
+      where: { discountGroupId },
+    });
+  }
 }
