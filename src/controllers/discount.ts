@@ -57,7 +57,6 @@ export default class Discount {
     }
 
     const data: Prisma.DiscountModelCreateInput = {
-      enabled: true,
       discountGroup: { connect: { discountGroupId } },
     };
 
