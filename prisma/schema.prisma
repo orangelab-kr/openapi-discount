@@ -16,7 +16,7 @@ model DiscountGroupModel {
   enabled         Boolean @default(true)
 
   name           String
-  description String
+  description    String?
   remainingCount Int?
 
   platformId           String
@@ -36,21 +36,13 @@ model DiscountGroupModel {
 }
 
 model DiscountModel {
-  discountId String  @id @default(uuid())
-  isUsed     Boolean @default(false)
+  discountId String @id @default(uuid())
 
   discountGroupId String
   discountGroup   DiscountGroupModel @relation(fields: [discountGroupId], references: [discountGroupId])
 
-  platformId           String
-  ratioPriceDiscount   Int?
-  staticPriceDiscount  Int?
-  staticMinuteDiscount Int?
-
-  isPenaltyIncluded       Boolean @default(false)
-  isStandardPriceIncluded Boolean @default(false)
-
   expiredAt DateTime?
+  usedAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?

@@ -1,3 +1,4 @@
+import { DiscountGroupModel, DiscountModel } from '.prisma/client';
 import 'express';
 import { InternalPlatformAccessKey } from 'openapi-internal-sdk';
 
@@ -12,6 +13,8 @@ declare global {
         prs: boolean[];
         iat: Date;
         exp: Date;
+        discountGroup: DiscountGroupModel;
+        discount: DiscountModel;
       };
     }
   }
