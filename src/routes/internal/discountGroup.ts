@@ -34,6 +34,16 @@ export default function getInternalDiscountGroupRouter(): Router {
     })
   );
 
+  router.post(
+    '/:discountId',
+    InternalDiscountMiddleware(),
+    Wrapper(async (req, res) => {
+      const { discount, discountGroup } = req.internal;
+      await Discount.modifyDiscount(discountGroup, discount, req.body);
+      res.json({ opcode: OPCODE.SUCCESS });
+    })
+  );
+
   router.delete(
     '/:discountId',
     InternalDiscountMiddleware(),

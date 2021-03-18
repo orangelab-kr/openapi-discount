@@ -1,7 +1,8 @@
-import { Database, InternalError, OPCODE } from '../tools';
+import { Database, InternalError, OPCODE, PATTERN } from '../tools';
 import { DiscountGroupModel, DiscountModel, Prisma } from '.prisma/client';
 
 import DiscountGroup from './discountGroup';
+import Joi from 'joi';
 import moment from 'moment';
 
 const { prisma } = Database;
@@ -35,6 +36,25 @@ export default class Discount {
 
     return discount;
   }
+
+  public static async modifyDiscount(
+    discountGroup: DiscountGroupModel,
+    discount: DiscountModel,
+    props: { usedAt: Date }
+  ): Promise<void> {
+    const schema = Joi.object({
+      usedAt: PATTERN.DISCOUNT.USED_AT.optional(),
+    });
+
+    const { discountId } = discount;
+    const { discountGroupId } = discountGroup;
+    const { usedAt } = await schema.validateAsync(props);
+    await prisma.discountModel.updateMany({
+      where: { discountId, discountGroup: { discountGroupId } },
+      data: { usedAt },
+    });
+  }
+
   public static async createDiscount(
     discountGroup: DiscountGroupModel
   ): Promise<DiscountModel> {
