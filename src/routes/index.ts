@@ -1,13 +1,14 @@
 import express, { Application } from 'express';
-
-import InternalError from '../tools/error';
-import InternalMiddleware from '../middlewares/internal';
-import OPCODE from '../tools/opcode';
-import Wrapper from '../tools/wrapper';
-import getInternalRouter from './internal';
-import logger from '../tools/logger';
 import morgan from 'morgan';
 import os from 'os';
+import { DiscountGroupMiddleware, PlatformMiddleware } from '../middlewares';
+import InternalMiddleware from '../middlewares/internal';
+import InternalError from '../tools/error';
+import logger from '../tools/logger';
+import OPCODE from '../tools/opcode';
+import Wrapper from '../tools/wrapper';
+import getDiscountGroupRouter from './discountGroup';
+import getInternalRouter from './internal';
 
 export default function getRouter(): Application {
   const router = express();
@@ -20,6 +21,12 @@ export default function getRouter(): Application {
   router.use(express.json());
   router.use(express.urlencoded({ extended: true }));
   router.use('/internal', InternalMiddleware(), getInternalRouter());
+  router.use(
+    '/:discountGroupId',
+    PlatformMiddleware(),
+    DiscountGroupMiddleware(),
+    getDiscountGroupRouter()
+  );
 
   router.get(
     '/',

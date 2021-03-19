@@ -25,7 +25,7 @@ export default function getInternalDiscountGroupRouter(): Router {
     })
   );
 
-  router.post(
+  router.get(
     '/generate',
     Wrapper(async (req, res) => {
       const { discountGroup } = req.internal;

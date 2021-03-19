@@ -1,11 +1,12 @@
-import Discount from '../controllers/discount';
 import { InternalError, OPCODE } from '../tools';
 import Wrapper, { Callback } from '../tools/wrapper';
+
+import Discount from '../controllers/discount';
 
 export default function DiscountMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
     const {
-      internal: { discountGroup },
+      discountGroup,
       params: { discountId },
     } = req;
 
