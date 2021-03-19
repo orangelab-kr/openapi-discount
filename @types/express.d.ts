@@ -5,7 +5,11 @@ import { InternalPlatformAccessKey } from 'openapi-internal-sdk';
 declare global {
   namespace Express {
     interface Request {
-      accessKey: InternalPlatformAccessKey;
+      discountGroup: DiscountGroupModel;
+      discount: DiscountModel;
+      loggined: {
+        accessKey: InternalPlatformAccessKey;
+      };
       internal: {
         sub: string;
         iss: string;

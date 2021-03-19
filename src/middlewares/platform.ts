@@ -1,7 +1,6 @@
-import { Callback, InternalError, OPCODE, Wrapper, logger } from '../tools';
-
-import InternalClient from '../tools/internalClient';
 import { PlatformPermission } from 'openapi-internal-sdk';
+import { Callback, InternalError, logger, OPCODE, Wrapper } from '../tools';
+import InternalClient from '../tools/internalClient';
 
 export default function PlatformMiddleware(
   permissionIds: string[] = []
@@ -10,7 +9,6 @@ export default function PlatformMiddleware(
     PlatformPermission.ACCESS_KEYS_AUTHORIZE,
   ]);
 
-  platformClient.baseURL = process.env.HIKICK_OPENAPI_PLATFORM_URL || '';
   return Wrapper(async (req, res, next) => {
     try {
       const { headers } = req;
@@ -22,7 +20,7 @@ export default function PlatformMiddleware(
         permissionIds,
       });
 
-      req.accessKey = accessKey;
+      req.loggined = { accessKey };
       next();
     } catch (err) {
       if (process.env.NODE_ENV === 'dev') {
