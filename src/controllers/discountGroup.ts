@@ -23,6 +23,98 @@ export default class DiscountGroup {
     return discountGroup;
   }
 
+  public static async modifyDiscountGroup(
+    discountGroup: DiscountGroupModel,
+    props: {
+      enabled: boolean;
+      name: string;
+      description?: string;
+      remainingCount?: number;
+      platformId: string;
+      ratioPriceDiscount?: number;
+      staticPriceDiscount?: number;
+      staticMinuteDiscount?: number;
+      isStandardPriceIncluded: boolean;
+      isPenaltyIncluded: boolean;
+      validity?: number;
+    }
+  ): Promise<void> {
+    const schema = Joi.object({
+      enabled: PATTERN.DISCOUNT_GROUP.ENABLED.optional(),
+      name: PATTERN.DISCOUNT_GROUP.NAME.optional(),
+      description: PATTERN.DISCOUNT_GROUP.DESCRIPTION.optional(),
+      remainingCount: PATTERN.DISCOUNT_GROUP.REMAINING_COUNT.optional(),
+      platformId: PATTERN.PLATFORM.ID.optional(),
+      ratioPriceDiscount: PATTERN.DISCOUNT_GROUP.RATIO_PRICE_DISCOUNT.optional(),
+      staticPriceDiscount: PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT.optional(),
+      staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT.optional(),
+      isPenaltyIncluded: PATTERN.DISCOUNT_GROUP.IS_PENALTY_INCLUDED.optional(),
+      isStandardPriceIncluded: PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED.optional(),
+      validity: PATTERN.DISCOUNT_GROUP.VALIDITY.optional(),
+    });
+
+    const {
+      enabled,
+      name,
+      description,
+      remainingCount,
+      platformId,
+      ratioPriceDiscount,
+      staticPriceDiscount,
+      staticMinuteDiscount,
+      isPenaltyIncluded,
+      isStandardPriceIncluded,
+      validity,
+    } = await schema.validateAsync(props);
+    if (
+      ratioPriceDiscount === undefined &&
+      discountGroup.ratioPriceDiscount === null &&
+      staticPriceDiscount === undefined &&
+      discountGroup.staticPriceDiscount === null &&
+      staticMinuteDiscount === undefined &&
+      discountGroup.staticMinuteDiscount === null
+    ) {
+      throw new InternalError(
+        '비율 금액, 정적 금액, 정적 시간 중 하나를 입력해야 합니다.',
+        OPCODE.ERROR
+      );
+    }
+
+    if (name && name !== discountGroup.name) {
+      const exists = await DiscountGroup.getDiscountGroupByName(name);
+      if (exists) {
+        throw new InternalError(
+          '해당 이름과 동일한 할인 그룹이 존재합니다.',
+          OPCODE.ALREADY_EXISTS
+        );
+      }
+    }
+
+    if (platformId && platformId !== discountGroup.platformId) {
+      await InternalClient.getPlatform([
+        PlatformPermission.PLATFORMS_VIEW,
+      ]).getPlatform(platformId);
+    }
+
+    const { discountGroupId } = discountGroup;
+    await prisma.discountGroupModel.updateMany({
+      where: { discountGroupId },
+      data: {
+        enabled,
+        name,
+        description,
+        remainingCount,
+        platformId,
+        ratioPriceDiscount,
+        staticPriceDiscount,
+        staticMinuteDiscount,
+        isPenaltyIncluded,
+        isStandardPriceIncluded,
+        validity,
+      },
+    });
+  }
+
   public static async getDiscountGroupOrThrow(
     discountGroupId: string,
     platform?: InternalPlatform
@@ -92,7 +184,7 @@ export default class DiscountGroup {
   }
 
   public static async createDiscountGroup(props: {
-    enabled?: boolean;
+    enabled: boolean;
     name: string;
     description?: string;
     remainingCount?: number;
@@ -105,7 +197,7 @@ export default class DiscountGroup {
     validity?: number;
   }): Promise<DiscountGroupModel> {
     const schema = Joi.object({
-      enabled: PATTERN.DISCOUNT_GROUP.ENABLED.default(false).optional(),
+      enabled: PATTERN.DISCOUNT_GROUP.ENABLED,
       name: PATTERN.DISCOUNT_GROUP.NAME,
       description: PATTERN.DISCOUNT_GROUP.DESCRIPTION,
       remainingCount: PATTERN.DISCOUNT_GROUP.REMAINING_COUNT,
@@ -132,10 +224,6 @@ export default class DiscountGroup {
       isStandardPriceIncluded,
       validity,
     } = await schema.validateAsync(props);
-    const platformClient = InternalClient.getPlatform([
-      PlatformPermission.PLATFORMS_VIEW,
-    ]);
-
     if (
       ratioPriceDiscount === undefined &&
       staticPriceDiscount === undefined &&
@@ -149,7 +237,9 @@ export default class DiscountGroup {
 
     const [exists] = await Promise.all([
       DiscountGroup.getDiscountGroupByName(name),
-      platformClient.getPlatform(platformId),
+      InternalClient.getPlatform([
+        PlatformPermission.PLATFORMS_VIEW,
+      ]).getPlatform(platformId),
     ]);
 
     if (exists) {

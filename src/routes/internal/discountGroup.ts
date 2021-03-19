@@ -1,8 +1,8 @@
+import { Router } from 'express';
+import { OPCODE } from 'openapi-internal-sdk';
 import Discount from '../../controllers/discount';
 import DiscountGroup from '../../controllers/discountGroup';
 import InternalDiscountMiddleware from '../../middlewares/internal/discount';
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 import { Wrapper } from '../../tools';
 
 export default function getInternalDiscountGroupRouter(): Router {
@@ -13,6 +13,15 @@ export default function getInternalDiscountGroupRouter(): Router {
     Wrapper(async (req, res) => {
       const { discountGroup } = req.internal;
       res.json({ opcode: OPCODE.SUCCESS, discountGroup });
+    })
+  );
+
+  router.post(
+    '/',
+    Wrapper(async (req, res) => {
+      const { body, internal } = req;
+      await DiscountGroup.modifyDiscountGroup(internal.discountGroup, body);
+      res.json({ opcode: OPCODE.SUCCESS });
     })
   );
 

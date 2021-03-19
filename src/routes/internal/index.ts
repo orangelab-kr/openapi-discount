@@ -1,7 +1,7 @@
+import { Router } from 'express';
+import { OPCODE } from 'openapi-internal-sdk';
 import DiscountGroup from '../../controllers/discountGroup';
 import InternalDiscountGroupMiddleware from '../../middlewares/internal/discountGroup';
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 import { Wrapper } from '../../tools';
 import getInternalDiscountGroupRouter from './discountGroup';
 
