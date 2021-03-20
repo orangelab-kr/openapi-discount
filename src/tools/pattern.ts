@@ -31,7 +31,7 @@ const PATTERN = {
     STATIC_MINUTE_DISCOUNT: Joi.number().optional(),
     IS_PENALTY_INCLUDED: Joi.boolean().required(),
     IS_STANDARD_PRICE_INCLUDED: Joi.boolean().required(),
-    USED_AT: Joi.date().timestamp('unix').required(),
+    USED_AT: Joi.date().allow(null).required(),
   },
   PLATFORM: {
     ID: Joi.string().uuid().required(),
