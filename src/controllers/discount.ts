@@ -1,13 +1,60 @@
-import { Database, InternalError, OPCODE, PATTERN } from '../tools';
 import { DiscountGroupModel, DiscountModel, Prisma } from '.prisma/client';
-
-import DiscountGroup from './discountGroup';
 import Joi from 'joi';
 import moment from 'moment';
+import { Database, InternalError, OPCODE, PATTERN } from '../tools';
+import DiscountGroup from './discountGroup';
 
 const { prisma } = Database;
 
 export default class Discount {
+  public static async getDiscounts(
+    discountGroup: DiscountGroupModel,
+    props: {
+      take?: number;
+      skip?: number;
+      search?: number;
+      orderByField?: 'usedAt' | 'expiredAt' | 'createdAt';
+      orderBySort?: 'asc' | 'desc';
+    }
+  ): Promise<{ total: number; discounts: DiscountModel[] }> {
+    const schema = Joi.object({
+      take: PATTERN.PAGINATION.TAKE,
+      skip: PATTERN.PAGINATION.SKIP,
+      search: PATTERN.PAGINATION.SEARCH,
+      orderByField: PATTERN.PAGINATION.ORDER_BY.FIELD.valid(
+        'usedAt',
+        'expriedAt',
+        'createdAt',
+        'createdAt'
+      ).default('createdAt'),
+      orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
+    });
+
+    const {
+      take,
+      skip,
+      search,
+      orderByField,
+      orderBySort,
+    } = await schema.validateAsync(props);
+    const { discountGroupId } = discountGroup;
+    const where: Prisma.DiscountModelWhereInput = {
+      discountGroup: { discountGroupId },
+    };
+
+    const orderBy: Prisma.DiscountModelOrderByInput = {
+      [orderByField]: orderBySort,
+    };
+
+    if (search) where.discountId = { contains: search };
+    const [total, discounts] = await prisma.$transaction([
+      prisma.discountModel.count({ where }),
+      prisma.discountModel.findMany({ take, skip, where, orderBy }),
+    ]);
+
+    return { total, discounts };
+  }
+
   public static async getDiscount(
     discountGroup: DiscountGroupModel,
     discountId: string

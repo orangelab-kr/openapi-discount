@@ -11,8 +11,17 @@ export default function getInternalDiscountGroupRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req, res) => {
-      const { discountGroup } = req.internal;
-      res.json({ opcode: OPCODE.SUCCESS, discountGroup });
+      const {
+        internal: { discountGroup },
+        query,
+      } = req;
+
+      const { total, discounts } = await Discount.getDiscounts(
+        discountGroup,
+        query
+      );
+
+      res.json({ opcode: OPCODE.SUCCESS, discountGroup, discounts, total });
     })
   );
 

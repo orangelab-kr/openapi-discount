@@ -10,8 +10,13 @@ export default function getDiscountGroupRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req, res) => {
-      const { discountGroup } = req;
-      res.json({ opcode: OPCODE.SUCCESS, discountGroup });
+      const { discountGroup, query } = req;
+      const { total, discounts } = await Discount.getDiscounts(
+        discountGroup,
+        query
+      );
+
+      res.json({ opcode: OPCODE.SUCCESS, discountGroup, discounts, total });
     })
   );
 
