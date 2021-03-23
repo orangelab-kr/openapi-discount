@@ -18,7 +18,9 @@ plugins:
 custom:
   webpack:
     includeModules: true
+    packager: 'yarn'
     packagerOptions:
+      noFrozenLockfile: true
       scripts:
         - prisma generate
   serverless-offline:
