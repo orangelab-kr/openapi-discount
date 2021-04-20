@@ -25,7 +25,7 @@ model DiscountGroupModel {
   staticPriceDiscount  Int?
   staticMinuteDiscount Int?
 
-  isPenaltyIncluded       Boolean @default(false)
+  isSurchargeIncluded     Boolean @default(false)
   isStandardPriceIncluded Boolean @default(false)
 
   validity Int?

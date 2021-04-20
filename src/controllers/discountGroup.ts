@@ -1,5 +1,3 @@
-import { DiscountGroupModel, Prisma } from '.prisma/client';
-import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
 import {
   Database,
   InternalClient,
@@ -8,6 +6,8 @@ import {
   OPCODE,
   PATTERN,
 } from '../tools';
+import { DiscountGroupModel, Prisma } from '.prisma/client';
+import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
 
 const { prisma } = Database;
 
@@ -35,7 +35,7 @@ export default class DiscountGroup {
       staticPriceDiscount?: number;
       staticMinuteDiscount?: number;
       isStandardPriceIncluded: boolean;
-      isPenaltyIncluded: boolean;
+      isSurchargeIncluded: boolean;
       validity?: number;
     }
   ): Promise<void> {
@@ -48,7 +48,7 @@ export default class DiscountGroup {
       ratioPriceDiscount: PATTERN.DISCOUNT_GROUP.RATIO_PRICE_DISCOUNT.optional(),
       staticPriceDiscount: PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT.optional(),
       staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT.optional(),
-      isPenaltyIncluded: PATTERN.DISCOUNT_GROUP.IS_PENALTY_INCLUDED.optional(),
+      isSurchargeIncluded: PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED.optional(),
       isStandardPriceIncluded: PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED.optional(),
       validity: PATTERN.DISCOUNT_GROUP.VALIDITY.optional(),
     });
@@ -62,7 +62,7 @@ export default class DiscountGroup {
       ratioPriceDiscount,
       staticPriceDiscount,
       staticMinuteDiscount,
-      isPenaltyIncluded,
+      isSurchargeIncluded,
       isStandardPriceIncluded,
       validity,
     } = await schema.validateAsync(props);
@@ -108,7 +108,7 @@ export default class DiscountGroup {
         ratioPriceDiscount,
         staticPriceDiscount,
         staticMinuteDiscount,
-        isPenaltyIncluded,
+        isSurchargeIncluded,
         isStandardPriceIncluded,
         validity,
       },
@@ -192,7 +192,7 @@ export default class DiscountGroup {
     ratioPriceDiscount?: number;
     staticPriceDiscount?: number;
     staticMinuteDiscount?: number;
-    isPenaltyIncluded: boolean;
+    isSurchargeIncluded: boolean;
     isStandardPriceIncluded: boolean;
     validity?: number;
   }): Promise<DiscountGroupModel> {
@@ -205,7 +205,7 @@ export default class DiscountGroup {
       ratioPriceDiscount: PATTERN.DISCOUNT_GROUP.RATIO_PRICE_DISCOUNT,
       staticPriceDiscount: PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT,
       staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT,
-      isPenaltyIncluded: PATTERN.DISCOUNT_GROUP.IS_PENALTY_INCLUDED,
+      isSurchargeIncluded: PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED,
       isStandardPriceIncluded:
         PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED,
       validity: PATTERN.DISCOUNT_GROUP.VALIDITY,
@@ -220,7 +220,7 @@ export default class DiscountGroup {
       ratioPriceDiscount,
       staticPriceDiscount,
       staticMinuteDiscount,
-      isPenaltyIncluded,
+      isSurchargeIncluded,
       isStandardPriceIncluded,
       validity,
     } = await schema.validateAsync(props);
@@ -259,7 +259,7 @@ export default class DiscountGroup {
         ratioPriceDiscount,
         staticPriceDiscount,
         staticMinuteDiscount,
-        isPenaltyIncluded,
+        isSurchargeIncluded,
         isStandardPriceIncluded,
         validity,
       },
