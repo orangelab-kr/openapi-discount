@@ -20,6 +20,7 @@ const PATTERN = {
     STATIC_PRICE_DISCOUNT: Joi.number().optional(),
     STATIC_MINUTE_DISCOUNT: Joi.number().optional(),
     IS_SURCHARGE_INCLUDED: Joi.boolean().required(),
+    IS_PER_MINUTE_PRICE_INCLUDED: Joi.boolean().required(),
     IS_STANDARD_PRICE_INCLUDED: Joi.boolean().required(),
     VALIDITY: Joi.number().optional(),
   },

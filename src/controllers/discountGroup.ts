@@ -36,6 +36,7 @@ export default class DiscountGroup {
       staticMinuteDiscount?: number;
       isStandardPriceIncluded: boolean;
       isSurchargeIncluded: boolean;
+      isPerMinutePriceIncluded: boolean;
       validity?: number;
     }
   ): Promise<void> {
@@ -50,6 +51,7 @@ export default class DiscountGroup {
       staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT.optional(),
       isSurchargeIncluded: PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED.optional(),
       isStandardPriceIncluded: PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED.optional(),
+      isPerMinutePriceIncluded: PATTERN.DISCOUNT_GROUP.IS_PER_MINUTE_PRICE_INCLUDED.optional(),
       validity: PATTERN.DISCOUNT_GROUP.VALIDITY.optional(),
     });
 
@@ -64,6 +66,7 @@ export default class DiscountGroup {
       staticMinuteDiscount,
       isSurchargeIncluded,
       isStandardPriceIncluded,
+      isPerMinutePriceIncluded,
       validity,
     } = await schema.validateAsync(props);
     if (
@@ -110,6 +113,7 @@ export default class DiscountGroup {
         staticMinuteDiscount,
         isSurchargeIncluded,
         isStandardPriceIncluded,
+        isPerMinutePriceIncluded,
         validity,
       },
     });
@@ -194,6 +198,7 @@ export default class DiscountGroup {
     staticMinuteDiscount?: number;
     isSurchargeIncluded: boolean;
     isStandardPriceIncluded: boolean;
+    isPerMinutePriceIncluded: boolean;
     validity?: number;
   }): Promise<DiscountGroupModel> {
     const schema = Joi.object({
@@ -206,6 +211,8 @@ export default class DiscountGroup {
       staticPriceDiscount: PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT,
       staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT,
       isSurchargeIncluded: PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED,
+      isPerMinutePriceIncluded:
+        PATTERN.DISCOUNT_GROUP.IS_PER_MINUTE_PRICE_INCLUDED,
       isStandardPriceIncluded:
         PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED,
       validity: PATTERN.DISCOUNT_GROUP.VALIDITY,
@@ -222,6 +229,7 @@ export default class DiscountGroup {
       staticMinuteDiscount,
       isSurchargeIncluded,
       isStandardPriceIncluded,
+      isPerMinutePriceIncluded,
       validity,
     } = await schema.validateAsync(props);
     if (
@@ -260,6 +268,7 @@ export default class DiscountGroup {
         staticPriceDiscount,
         staticMinuteDiscount,
         isSurchargeIncluded,
+        isPerMinutePriceIncluded,
         isStandardPriceIncluded,
         validity,
       },

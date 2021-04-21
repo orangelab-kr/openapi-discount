@@ -27,6 +27,7 @@ model DiscountGroupModel {
 
   isSurchargeIncluded     Boolean @default(false)
   isStandardPriceIncluded Boolean @default(false)
+  isPerMinutePriceIncluded Boolean @default(false)
 
   validity Int?
 
