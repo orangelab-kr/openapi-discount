@@ -151,7 +151,7 @@ const messages = {
 };
 
 const Joi = JoiLib.defaults((schema) =>
-  schema.options({ abortEarly: false, messages })
+  schema.options({ stripUnknown: true, messages })
 );
 
 export default Joi;
