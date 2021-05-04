@@ -6,7 +6,7 @@ import {
   OPCODE,
   PATTERN,
 } from '../tools';
-import { DiscountGroupModel, Prisma } from '.prisma/client';
+import { DiscountGroupModel, Prisma } from '@prisma/client';
 import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
 
 const { prisma } = Database;

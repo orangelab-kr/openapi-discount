@@ -1,8 +1,9 @@
-import { DiscountGroupModel, DiscountModel, Prisma } from '.prisma/client';
+import { Database, InternalError, OPCODE, PATTERN } from '../tools';
+import { DiscountGroupModel, DiscountModel, Prisma } from '@prisma/client';
+
+import DiscountGroup from './discountGroup';
 import Joi from 'joi';
 import moment from 'moment';
-import { Database, InternalError, OPCODE, PATTERN } from '../tools';
-import DiscountGroup from './discountGroup';
 
 const { prisma } = Database;
 
