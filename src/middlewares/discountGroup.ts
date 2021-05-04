@@ -1,6 +1,7 @@
-import DiscountGroup from '../controllers/discountGroup';
 import { InternalError, OPCODE } from '../tools';
 import Wrapper, { Callback } from '../tools/wrapper';
+
+import DiscountGroup from '../controllers/discountGroup';
 
 export default function DiscountGroupMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
@@ -12,7 +13,7 @@ export default function DiscountGroupMiddleware(): Callback {
       );
     }
 
-    const { platform } = req.loggined.accessKey;
+    const { platform } = req.loggined;
     req.discountGroup = await DiscountGroup.getDiscountGroupOrThrow(
       discountGroupId,
       platform

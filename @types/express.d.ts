@@ -1,6 +1,10 @@
-import { DiscountGroupModel, DiscountModel } from '.prisma/client';
+import { DiscountGroupModel, DiscountModel } from '@prisma/client';
 import 'express';
-import { InternalPlatformAccessKey } from 'openapi-internal-sdk';
+import {
+  InternalPlatformAccessKey,
+  InternalPlatform,
+  InternalPlatformUser,
+} from 'openapi-internal-sdk';
 
 declare global {
   namespace Express {
@@ -8,7 +12,9 @@ declare global {
       discountGroup: DiscountGroupModel;
       discount: DiscountModel;
       loggined: {
-        accessKey: InternalPlatformAccessKey;
+        platform: InternalPlatform;
+        accessKey?: InternalPlatformAccessKey;
+        user?: InternalPlatformUser;
       };
       internal: {
         sub: string;
