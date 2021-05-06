@@ -2,7 +2,7 @@ import { DiscountGroup, InternalError, Joi, OPCODE, PATTERN } from '..';
 import { DiscountGroupModel, DiscountModel, Prisma } from '@prisma/client';
 
 import { Database } from '../tools';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { prisma } = Database;
 
@@ -127,7 +127,7 @@ export class Discount {
       discountGroup: { connect: { discountGroupId } },
     };
 
-    if (validity) data.expiredAt = moment().add(validity).toDate();
+    if (validity) data.expiredAt = dayjs().add(validity).toDate();
     const discount = await prisma.discountModel.create({ data });
     await DiscountGroup.decreseDiscountGroupRemainingCount(discountGroup);
     return discount;
