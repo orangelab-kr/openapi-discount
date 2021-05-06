@@ -1,6 +1,6 @@
-import Joi from './joi';
+import { Joi } from '.';
 
-const PATTERN = {
+export const PATTERN = {
   PAGINATION: {
     TAKE: Joi.number().default(10).optional(),
     SKIP: Joi.number().default(0).optional(),
@@ -37,5 +37,3 @@ const PATTERN = {
     ID: Joi.string().uuid().required(),
   },
 };
-
-export default PATTERN;

@@ -11,7 +11,7 @@ import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
 
 const { prisma } = Database;
 
-export default class DiscountGroup {
+export class DiscountGroup {
   public static async getDiscountGroup(
     discountGroupId: string,
     platform?: InternalPlatform

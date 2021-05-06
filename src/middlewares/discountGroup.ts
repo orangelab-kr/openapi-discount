@@ -1,9 +1,6 @@
-import { InternalError, OPCODE } from '../tools';
-import Wrapper, { Callback } from '../tools/wrapper';
+import { Callback, DiscountGroup, InternalError, OPCODE, Wrapper } from '..';
 
-import DiscountGroup from '../controllers/discountGroup';
-
-export default function DiscountGroupMiddleware(): Callback {
+export function DiscountGroupMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
     const { discountGroupId } = req.params;
     if (!discountGroupId) {

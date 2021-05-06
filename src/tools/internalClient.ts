@@ -5,7 +5,7 @@ import {
   PlatformPermission,
 } from 'openapi-internal-sdk';
 
-export default class InternalClient {
+export class InternalClient {
   public static getFranchise(
     permissions?: FranchisePermission[],
     email = 'system@hikick.kr'

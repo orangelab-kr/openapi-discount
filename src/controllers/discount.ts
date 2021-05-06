@@ -1,13 +1,12 @@
-import { Database, InternalError, OPCODE, PATTERN } from '../tools';
+import { DiscountGroup, InternalError, Joi, OPCODE, PATTERN } from '..';
 import { DiscountGroupModel, DiscountModel, Prisma } from '@prisma/client';
 
-import DiscountGroup from './discountGroup';
-import Joi from 'joi';
+import { Database } from '../tools';
 import moment from 'moment';
 
 const { prisma } = Database;
 
-export default class Discount {
+export class Discount {
   public static async getDiscounts(
     discountGroup: DiscountGroupModel,
     props: {

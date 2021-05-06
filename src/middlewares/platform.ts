@@ -5,7 +5,7 @@ import {
   OPCODE,
   Wrapper,
   logger,
-} from '../tools';
+} from '..';
 
 import { PlatformPermission } from 'openapi-internal-sdk';
 

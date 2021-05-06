@@ -1,10 +1,9 @@
-import { Router } from 'express';
-import { OPCODE } from 'openapi-internal-sdk';
-import Discount from '../controllers/discount';
-import { DiscountMiddleware } from '../middlewares';
-import { Wrapper } from '../tools';
+import { Discount, DiscountMiddleware, Wrapper } from '..';
 
-export default function getDiscountGroupRouter(): Router {
+import { OPCODE } from 'openapi-internal-sdk';
+import { Router } from 'express';
+
+export function getDiscountGroupRouter(): Router {
   const router = Router();
 
   router.get(

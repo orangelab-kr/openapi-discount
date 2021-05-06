@@ -1,8 +1,11 @@
-import { Database } from './tools';
-import dotenv from 'dotenv';
-import getRouter from './routes';
+import { Database, getRouter } from '.';
+
 import serverless from 'serverless-http';
-if (process.env.NODE_ENV === 'development') dotenv.config();
+
+export * from './controllers';
+export * from './middlewares';
+export * from './routes';
+export * from './tools';
 
 Database.initPrisma();
 const options = { basePath: '/v1/discount' };

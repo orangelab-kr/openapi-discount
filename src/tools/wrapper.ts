@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/node';
+
 import { NextFunction, Request, Response } from 'express';
+import { OPCODE, logger } from '..';
+
 import { ValidationError } from 'joi';
-import logger from './logger';
-import OPCODE from './opcode';
 
 export type Callback = (
   req: Request,
@@ -10,7 +11,7 @@ export type Callback = (
   next: NextFunction
 ) => Promise<unknown>;
 
-export default function Wrapper(cb: Callback): Callback {
+export function Wrapper(cb: Callback): Callback {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       return await cb(req, res, next);
