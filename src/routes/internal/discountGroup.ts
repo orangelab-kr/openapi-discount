@@ -41,8 +41,8 @@ export function getInternalDiscountGroupRouter(): Router {
     '/generate',
     Wrapper(async (req, res) => {
       const { discountGroup } = req.internal;
-      const { discountId } = await Discount.createDiscount(discountGroup);
-      res.json({ opcode: OPCODE.SUCCESS, discountId });
+      const discount = await Discount.createDiscount(discountGroup);
+      res.json({ opcode: OPCODE.SUCCESS, discount });
     })
   );
 
