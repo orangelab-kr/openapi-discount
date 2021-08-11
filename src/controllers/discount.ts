@@ -30,13 +30,8 @@ export class Discount {
       orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
     });
 
-    const {
-      take,
-      skip,
-      search,
-      orderByField,
-      orderBySort,
-    } = await schema.validateAsync(props);
+    const { take, skip, search, orderByField, orderBySort } =
+      await schema.validateAsync(props);
     const { discountGroupId } = discountGroup;
     const where: Prisma.DiscountModelWhereInput = {
       discountGroup: { discountGroupId },
@@ -47,9 +42,10 @@ export class Discount {
     };
 
     if (search) where.discountId = { contains: search };
+    const include: Prisma.DiscountModelInclude = { discountGroup: true };
     const [total, discounts] = await prisma.$transaction([
       prisma.discountModel.count({ where }),
-      prisma.discountModel.findMany({ take, skip, where, orderBy }),
+      prisma.discountModel.findMany({ take, skip, where, orderBy, include }),
     ]);
 
     return { total, discounts };
@@ -65,8 +61,8 @@ export class Discount {
       discountGroup: { discountGroupId },
     };
 
-    const discount = await prisma.discountModel.findFirst({ where });
-    return discount;
+    const include: Prisma.DiscountModelInclude = { discountGroup: true };
+    return prisma.discountModel.findFirst({ where, include });
   }
 
   public static async getDiscountOrThrow(
@@ -105,12 +101,8 @@ export class Discount {
   public static async createDiscount(
     discountGroup: DiscountGroupModel
   ): Promise<DiscountModel> {
-    const {
-      discountGroupId,
-      enabled,
-      remainingCount,
-      validity,
-    } = discountGroup;
+    const { discountGroupId, enabled, remainingCount, validity } =
+      discountGroup;
 
     if (!enabled) {
       throw new InternalError('사용할 수 없는 할인 그룹입니다.', OPCODE.ERROR);
@@ -128,7 +120,8 @@ export class Discount {
     };
 
     if (validity) data.expiredAt = dayjs().add(validity).toDate();
-    const discount = await prisma.discountModel.create({ data });
+    const include: Prisma.DiscountModelInclude = { discountGroup: true };
+    const discount = await prisma.discountModel.create({ data, include });
     await DiscountGroup.decreseDiscountGroupRemainingCount(discountGroup);
     return discount;
   }
