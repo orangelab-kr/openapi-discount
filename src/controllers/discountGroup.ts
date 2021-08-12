@@ -46,12 +46,18 @@ export class DiscountGroup {
       description: PATTERN.DISCOUNT_GROUP.DESCRIPTION.optional(),
       remainingCount: PATTERN.DISCOUNT_GROUP.REMAINING_COUNT.optional(),
       platformId: PATTERN.PLATFORM.ID.optional(),
-      ratioPriceDiscount: PATTERN.DISCOUNT_GROUP.RATIO_PRICE_DISCOUNT.optional(),
-      staticPriceDiscount: PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT.optional(),
-      staticMinuteDiscount: PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT.optional(),
-      isSurchargeIncluded: PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED.optional(),
-      isStandardPriceIncluded: PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED.optional(),
-      isPerMinutePriceIncluded: PATTERN.DISCOUNT_GROUP.IS_PER_MINUTE_PRICE_INCLUDED.optional(),
+      ratioPriceDiscount:
+        PATTERN.DISCOUNT_GROUP.RATIO_PRICE_DISCOUNT.optional(),
+      staticPriceDiscount:
+        PATTERN.DISCOUNT_GROUP.STATIC_PRICE_DISCOUNT.optional(),
+      staticMinuteDiscount:
+        PATTERN.DISCOUNT_GROUP.STATIC_MINUTE_DISCOUNT.optional(),
+      isSurchargeIncluded:
+        PATTERN.DISCOUNT_GROUP.IS_SURCHARGE_INCLUDED.optional(),
+      isStandardPriceIncluded:
+        PATTERN.DISCOUNT_GROUP.IS_STANDARD_PRICE_INCLUDED.optional(),
+      isPerMinutePriceIncluded:
+        PATTERN.DISCOUNT_GROUP.IS_PER_MINUTE_PRICE_INCLUDED.optional(),
       validity: PATTERN.DISCOUNT_GROUP.VALIDITY.optional(),
     });
 
@@ -158,13 +164,8 @@ export class DiscountGroup {
       orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
     });
 
-    const {
-      take,
-      skip,
-      search,
-      orderByField,
-      orderBySort,
-    } = await schema.validateAsync(props);
+    const { take, skip, search, orderByField, orderBySort } =
+      await schema.validateAsync(props);
     const where: Prisma.DiscountGroupModelWhereInput = {};
     const orderBy: Prisma.DiscountGroupModelOrderByInput = {
       [orderByField]: orderBySort,

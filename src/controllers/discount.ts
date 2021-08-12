@@ -18,14 +18,14 @@ export class Discount {
     }
   ): Promise<{ total: number; discounts: DiscountModel[] }> {
     const schema = Joi.object({
-      take: PATTERN.PAGINATION.TAKE,
+      take: PATTERN.PAGINATION.TAKE.default(0),
       skip: PATTERN.PAGINATION.SKIP,
       search: PATTERN.PAGINATION.SEARCH,
       orderByField: PATTERN.PAGINATION.ORDER_BY.FIELD.valid(
         'usedAt',
         'expriedAt',
         'createdAt',
-        'createdAt'
+        'updatedAt'
       ).default('createdAt'),
       orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
     });
@@ -42,10 +42,9 @@ export class Discount {
     };
 
     if (search) where.discountId = { contains: search };
-    const include: Prisma.DiscountModelInclude = { discountGroup: true };
     const [total, discounts] = await prisma.$transaction([
       prisma.discountModel.count({ where }),
-      prisma.discountModel.findMany({ take, skip, where, orderBy, include }),
+      prisma.discountModel.findMany({ take, skip, where, orderBy }),
     ]);
 
     return { total, discounts };
