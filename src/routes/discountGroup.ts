@@ -39,7 +39,7 @@ export function getDiscountGroupRouter(): Router {
 
   router.delete(
     '/:discountId',
-    DiscountMiddleware(),
+    DiscountMiddleware({ throwIfIsUsed: true }),
     Wrapper(async (req, res) => {
       const { discount, discountGroup } = req;
       await Discount.deleteDiscount(discountGroup, discount);

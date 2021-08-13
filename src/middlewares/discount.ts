@@ -1,6 +1,11 @@
+import dayjs from 'dayjs';
 import { Callback, Discount, InternalError, OPCODE, Wrapper } from '..';
 
-export function DiscountMiddleware(): Callback {
+export function DiscountMiddleware(props?: {
+  throwIfIsUsed?: boolean;
+}): Callback {
+  const { throwIfIsUsed } = { throwIfIsUsed: false, ...props };
+
   return Wrapper(async (req, res, next) => {
     const {
       discountGroup,
@@ -14,7 +19,23 @@ export function DiscountMiddleware(): Callback {
       );
     }
 
-    req.discount = await Discount.getDiscountOrThrow(discountGroup, discountId);
+    const discount = await Discount.getDiscountOrThrow(
+      discountGroup,
+      discountId
+    );
+
+    if (
+      throwIfIsUsed &&
+      discount.expiredAt &&
+      dayjs(discount.expiredAt).isBefore(dayjs())
+    ) {
+      throw new InternalError(
+        '만료된 할인은 사용할 수 없습니다.',
+        OPCODE.ERROR
+      );
+    }
+
+    req.discount = discount;
     await next();
   });
 }

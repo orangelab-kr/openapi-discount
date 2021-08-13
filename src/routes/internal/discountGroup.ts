@@ -67,7 +67,7 @@ export function getInternalDiscountGroupRouter(): Router {
 
   router.delete(
     '/:discountId',
-    InternalDiscountMiddleware(),
+    InternalDiscountMiddleware({ throwIfIsUsed: true }),
     Wrapper(async (req, res) => {
       const { discountGroup, discount } = req.internal;
       await Discount.deleteDiscount(discountGroup, discount);
