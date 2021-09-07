@@ -9,6 +9,7 @@ import {
 declare global {
   namespace Express {
     interface Request {
+      permissionIds: string[];
       discountGroup: DiscountGroupModel;
       discount: DiscountModel;
       loggined: {

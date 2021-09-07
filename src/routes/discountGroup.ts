@@ -1,4 +1,4 @@
-import { Discount, DiscountMiddleware, Wrapper } from '..';
+import { Discount, DiscountMiddleware, PlatformMiddleware, Wrapper } from '..';
 
 import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
@@ -21,6 +21,10 @@ export function getDiscountGroupRouter(): Router {
 
   router.get(
     '/generate',
+    PlatformMiddleware({
+      permissionIds: ['discountGroups.discount.generate'],
+      final: true,
+    }),
     Wrapper(async (req, res) => {
       const { discountGroup } = req;
       const discount = await Discount.createDiscount(discountGroup);
@@ -30,6 +34,10 @@ export function getDiscountGroupRouter(): Router {
 
   router.get(
     '/:discountId',
+    PlatformMiddleware({
+      permissionIds: ['discountGroups.discount.view'],
+      final: true,
+    }),
     DiscountMiddleware(),
     Wrapper(async (req, res) => {
       const { discount } = req;
@@ -39,6 +47,10 @@ export function getDiscountGroupRouter(): Router {
 
   router.delete(
     '/:discountId',
+    PlatformMiddleware({
+      permissionIds: ['discountGroups.discount.revoke'],
+      final: true,
+    }),
     DiscountMiddleware({ throwIfIsUsed: true }),
     Wrapper(async (req, res) => {
       const { discount, discountGroup } = req;

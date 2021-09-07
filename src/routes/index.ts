@@ -21,7 +21,7 @@ export function getRouter(): Application {
   router.use('/internal', InternalMiddleware(), getInternalRouter());
   router.use(
     '/:discountGroupId',
-    PlatformMiddleware(),
+    PlatformMiddleware({ permissionIds: ['discountGroups.view'], final: true }),
     DiscountGroupMiddleware(),
     getDiscountGroupRouter()
   );
