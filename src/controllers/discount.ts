@@ -88,9 +88,17 @@ export class Discount {
       usedAt: PATTERN.DISCOUNT.USED_AT.optional(),
     });
 
+    const { usedAt } = await schema.validateAsync(props);
+    console.log(usedAt, discount.expiredAt);
+    if (usedAt !== null && dayjs(usedAt).isAfter(dayjs(discount.expiredAt))) {
+      throw new InternalError(
+        '사용일자가 만료일을 이미 지났기 때문에 사용할 수 없습니다.',
+        OPCODE.ERROR
+      );
+    }
+
     const { discountId } = discount;
     const { discountGroupId } = discountGroup;
-    const { usedAt } = await schema.validateAsync(props);
     await prisma.discountModel.updateMany({
       where: { discountId, discountGroup: { discountGroupId } },
       data: { usedAt },
