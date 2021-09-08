@@ -98,6 +98,10 @@ export class Discount {
     }
 
     const { discountId } = discount;
+    if (discount.usedAt && usedAt) {
+      throw new InternalError('이미 사용한 디스카운트입니다.', OPCODE.ERROR);
+    }
+
     if (discount.lockedAt && lockedAt) {
       throw new InternalError('이미 사용중인 디스카운트입니다.', OPCODE.ERROR);
     }
