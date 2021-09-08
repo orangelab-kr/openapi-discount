@@ -32,6 +32,7 @@ export const PATTERN = {
     STATIC_MINUTE_DISCOUNT: Joi.number().optional(),
     IS_STANDARD_PRICE_INCLUDED: Joi.boolean().required(),
     USED_AT: Joi.date().allow(null).required(),
+    LOCKED_AT: Joi.date().allow(null).required(),
   },
   PLATFORM: {
     ID: Joi.string().uuid().required(),

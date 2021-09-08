@@ -82,14 +82,14 @@ export class Discount {
   public static async modifyDiscount(
     discountGroup: DiscountGroupModel,
     discount: DiscountModel,
-    props: { usedAt: Date }
+    props: { usedAt: Date; lockedAt: Date }
   ): Promise<void> {
     const schema = Joi.object({
       usedAt: PATTERN.DISCOUNT.USED_AT.optional(),
+      lockedAt: PATTERN.DISCOUNT.LOCKED_AT.optional(),
     });
 
-    const { usedAt } = await schema.validateAsync(props);
-    console.log(usedAt, discount.expiredAt);
+    const { usedAt, lockedAt } = await schema.validateAsync(props);
     if (usedAt !== null && dayjs(usedAt).isAfter(dayjs(discount.expiredAt))) {
       throw new InternalError(
         '사용일자가 만료일을 이미 지났기 때문에 사용할 수 없습니다.',
@@ -98,10 +98,14 @@ export class Discount {
     }
 
     const { discountId } = discount;
+    if (discount.lockedAt && lockedAt) {
+      throw new InternalError('이미 사용중인 디스카운트입니다.', OPCODE.ERROR);
+    }
+
     const { discountGroupId } = discountGroup;
     await prisma.discountModel.updateMany({
       where: { discountId, discountGroup: { discountGroupId } },
-      data: { usedAt },
+      data: { usedAt, lockedAt },
     });
   }
 
