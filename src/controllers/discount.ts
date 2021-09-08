@@ -90,7 +90,10 @@ export class Discount {
     });
 
     const { usedAt, lockedAt } = await schema.validateAsync(props);
-    if (usedAt !== null && dayjs(usedAt).isAfter(dayjs(discount.expiredAt))) {
+    if (
+      lockedAt !== null &&
+      dayjs(lockedAt).isAfter(dayjs(discount.expiredAt))
+    ) {
       throw new InternalError(
         '사용일자가 만료일을 이미 지났기 때문에 사용할 수 없습니다.',
         OPCODE.ERROR
