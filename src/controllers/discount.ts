@@ -92,21 +92,22 @@ export class Discount {
     const { usedAt, lockedAt } = await schema.validateAsync(props);
     if (
       lockedAt !== null &&
+      discount.expiredAt !== null &&
       dayjs(lockedAt).isAfter(dayjs(discount.expiredAt))
     ) {
       throw new InternalError(
-        '사용일자가 만료일을 이미 지났기 때문에 사용할 수 없습니다.',
+        '할인이 만료되어 사용할 수 없습니다.',
         OPCODE.ERROR
       );
     }
 
     const { discountId } = discount;
     if (discount.usedAt && usedAt) {
-      throw new InternalError('이미 사용한 디스카운트입니다.', OPCODE.ERROR);
+      throw new InternalError('이미 사용한 할인입니다.', OPCODE.ERROR);
     }
 
     if (discount.lockedAt && lockedAt) {
-      throw new InternalError('이미 사용중인 디스카운트입니다.', OPCODE.ERROR);
+      throw new InternalError('이미 사용중인 할인입니다.', OPCODE.ERROR);
     }
 
     const { discountGroupId } = discountGroup;
@@ -148,8 +149,20 @@ export class Discount {
     discountGroup: DiscountGroupModel,
     discount: DiscountModel
   ): Promise<void> {
-    const { discountId } = discount;
+    const { discountId, usedAt, lockedAt, expiredAt } = discount;
     const { discountGroupId } = discountGroup;
+    if (
+      usedAt ||
+      lockedAt ||
+      (expiredAt && dayjs(expiredAt).isBefore(dayjs()))
+    ) {
+      throw new InternalError(
+        '이미 사용되었거나 만료된 할인은 취소할 수 없습니다.',
+        OPCODE.ERROR
+      );
+    }
+
+    await DiscountGroup.increaseDiscountGroupRemainingCount(discountGroup);
     await prisma.discountModel.deleteMany({
       where: { discountId, discountGroup: { discountGroupId } },
     });

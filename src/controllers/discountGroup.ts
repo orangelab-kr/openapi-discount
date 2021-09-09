@@ -298,6 +298,16 @@ export class DiscountGroup {
     });
   }
 
+  public static async increaseDiscountGroupRemainingCount(
+    discountGroup: DiscountGroupModel
+  ): Promise<void> {
+    const { discountGroupId } = discountGroup;
+    await prisma.discountGroupModel.update({
+      where: { discountGroupId },
+      data: { remainingCount: { increment: 1 } },
+    });
+  }
+
   public static async deleteDiscountGroup(
     discountGroup: DiscountGroupModel
   ): Promise<void> {
