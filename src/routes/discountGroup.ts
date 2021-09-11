@@ -1,15 +1,34 @@
-import { Router } from 'express';
-import { OPCODE } from 'openapi-internal-sdk';
 import {
   Discount,
+  DiscountGroup,
   DiscountGroupMiddleware,
   DiscountMiddleware,
   PlatformMiddleware,
   Wrapper,
 } from '..';
 
+import { OPCODE } from 'openapi-internal-sdk';
+import { Router } from 'express';
+
 export function getDiscountGroupRouter(): Router {
   const router = Router();
+
+  router.get(
+    '/',
+    PlatformMiddleware({
+      permissionIds: ['discountGroups.list'],
+      final: true,
+    }),
+    Wrapper(async (req, res) => {
+      const { platformId } = req.loggined.platform;
+      const { total, discountGroups } = await DiscountGroup.getDiscountGroups({
+        ...req.query,
+        platformId,
+      });
+
+      res.json({ opcode: OPCODE.SUCCESS, discountGroups, total });
+    })
+  );
 
   router.get(
     '/:discountGroupId',

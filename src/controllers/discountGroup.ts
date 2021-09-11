@@ -150,6 +150,7 @@ export class DiscountGroup {
     search?: number;
     orderByField?: 'enabled' | 'name' | 'remainingCount' | 'createdAt';
     orderBySort?: 'asc' | 'desc';
+    platformId?: string;
   }): Promise<{ total: number; discountGroups: DiscountGroupModel[] }> {
     const schema = Joi.object({
       take: PATTERN.PAGINATION.TAKE,
@@ -162,11 +163,12 @@ export class DiscountGroup {
         'createdAt'
       ).default('createdAt'),
       orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
+      platformId: PATTERN.PLATFORM.ID.optional(),
     });
 
-    const { take, skip, search, orderByField, orderBySort } =
+    const { take, skip, search, orderByField, orderBySort, platformId } =
       await schema.validateAsync(props);
-    const where: Prisma.DiscountGroupModelWhereInput = {};
+    const where: Prisma.DiscountGroupModelWhereInput = { platformId };
     const orderBy: Prisma.DiscountGroupModelOrderByInput = {
       [orderByField]: orderBySort,
     };
