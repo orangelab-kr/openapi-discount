@@ -1,13 +1,23 @@
-import { Discount, DiscountMiddleware, PlatformMiddleware, Wrapper } from '..';
-
-import { OPCODE } from 'openapi-internal-sdk';
 import { Router } from 'express';
+import { OPCODE } from 'openapi-internal-sdk';
+import {
+  Discount,
+  DiscountGroupMiddleware,
+  DiscountMiddleware,
+  PlatformMiddleware,
+  Wrapper,
+} from '..';
 
 export function getDiscountGroupRouter(): Router {
   const router = Router();
 
   router.get(
-    '/',
+    '/:discountGroupId',
+    PlatformMiddleware({
+      permissionIds: ['discountGroups.view'],
+      final: true,
+    }),
+    DiscountGroupMiddleware(),
     Wrapper(async (req, res) => {
       const { discountGroup, query } = req;
       const { total, discounts } = await Discount.getDiscounts(
@@ -20,11 +30,12 @@ export function getDiscountGroupRouter(): Router {
   );
 
   router.get(
-    '/generate',
+    '/:discountGroupId/generate',
     PlatformMiddleware({
       permissionIds: ['discountGroups.discount.generate'],
       final: true,
     }),
+    DiscountGroupMiddleware(),
     Wrapper(async (req, res) => {
       const { discountGroup } = req;
       const discount = await Discount.createDiscount(discountGroup);
@@ -33,11 +44,12 @@ export function getDiscountGroupRouter(): Router {
   );
 
   router.get(
-    '/:discountId',
+    '/:discountGroupId/:discountId',
     PlatformMiddleware({
       permissionIds: ['discountGroups.discount.view'],
       final: true,
     }),
+    DiscountGroupMiddleware(),
     DiscountMiddleware(),
     Wrapper(async (req, res) => {
       const { discount } = req;
@@ -46,11 +58,12 @@ export function getDiscountGroupRouter(): Router {
   );
 
   router.delete(
-    '/:discountId',
+    '/:discountGroupId/:discountId',
     PlatformMiddleware({
       permissionIds: ['discountGroups.discount.revoke'],
       final: true,
     }),
+    DiscountGroupMiddleware(),
     DiscountMiddleware({ throwIfIsUsed: true }),
     Wrapper(async (req, res) => {
       const { discount, discountGroup } = req;

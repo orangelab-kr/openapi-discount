@@ -1,13 +1,11 @@
 import express, { Application } from 'express';
 import {
   clusterInfo,
-  DiscountGroupMiddleware,
   getDiscountGroupRouter,
   getInternalRouter,
   InternalError,
   InternalMiddleware,
   OPCODE,
-  PlatformMiddleware,
   Wrapper,
 } from '..';
 
@@ -19,12 +17,7 @@ export function getRouter(): Application {
   InternalError.registerSentry(router);
 
   router.use('/internal', InternalMiddleware(), getInternalRouter());
-  router.use(
-    '/:discountGroupId',
-    PlatformMiddleware({ permissionIds: ['discountGroups.view'], final: true }),
-    DiscountGroupMiddleware(),
-    getDiscountGroupRouter()
-  );
+  router.use('/discountGroups', getDiscountGroupRouter());
 
   router.get(
     '/',
