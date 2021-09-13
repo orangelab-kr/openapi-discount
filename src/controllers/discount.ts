@@ -21,6 +21,7 @@ export class Discount {
       take: PATTERN.PAGINATION.TAKE.default(0),
       skip: PATTERN.PAGINATION.SKIP,
       search: PATTERN.PAGINATION.SEARCH,
+      showUsed: PATTERN.DISCOUNT.SHOW_USED,
       orderByField: PATTERN.PAGINATION.ORDER_BY.FIELD.valid(
         'usedAt',
         'expriedAt',
@@ -30,7 +31,7 @@ export class Discount {
       orderBySort: PATTERN.PAGINATION.ORDER_BY.SORT.default('desc'),
     });
 
-    const { take, skip, search, orderByField, orderBySort } =
+    const { take, skip, search, orderByField, orderBySort, showUsed } =
       await schema.validateAsync(props);
     const { discountGroupId } = discountGroup;
     const where: Prisma.DiscountModelWhereInput = {
@@ -42,6 +43,7 @@ export class Discount {
     };
 
     if (search) where.discountId = { contains: search };
+    if (!showUsed) where.lockedAt = null;
     const [total, discounts] = await prisma.$transaction([
       prisma.discountModel.count({ where }),
       prisma.discountModel.findMany({ take, skip, where, orderBy }),

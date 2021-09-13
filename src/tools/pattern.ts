@@ -25,6 +25,7 @@ export const PATTERN = {
     VALIDITY: Joi.number().optional(),
   },
   DISCOUNT: {
+    SHOW_USED: Joi.boolean().default(true).optional(),
     ID: Joi.string().uuid().required(),
     IS_USED: Joi.boolean().required(),
     RATIO_PRICE_DISCOUNT: Joi.number().optional(),
