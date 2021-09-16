@@ -93,8 +93,8 @@ export class Discount {
 
     const { usedAt, lockedAt } = await schema.validateAsync(props);
     if (
-      lockedAt !== null &&
-      discount.expiredAt !== null &&
+      lockedAt &&
+      discount.expiredAt &&
       dayjs(lockedAt).isAfter(dayjs(discount.expiredAt))
     ) {
       throw new InternalError(
