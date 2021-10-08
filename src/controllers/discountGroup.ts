@@ -1,8 +1,6 @@
 import { DiscountGroupModel, Prisma } from '@prisma/client';
 import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
-import { Database, InternalClient, Joi, PATTERN, RESULT } from '../tools';
-
-const { prisma } = Database;
+import { InternalClient, Joi, PATTERN, prisma, RESULT } from '..';
 
 export class DiscountGroup {
   public static async getDiscountGroup(

@@ -1,5 +1,5 @@
 import { PlatformPermission } from 'openapi-internal-sdk';
-import { WrapperCallback, InternalClient, Wrapper } from '../tools';
+import { WrapperCallback, InternalClient, Wrapper } from '..';
 
 const platformClient = InternalClient.getPlatform([
   PlatformPermission.AUTHORIZE_USER,

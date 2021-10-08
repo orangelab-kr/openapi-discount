@@ -1,9 +1,6 @@
 import { DiscountGroupModel, DiscountModel, Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
-import { DiscountGroup, Joi, PATTERN } from '..';
-import { Database, RESULT } from '../tools';
-
-const { prisma } = Database;
+import { DiscountGroup, Joi, PATTERN, prisma, RESULT } from '..';
 
 export class Discount {
   public static async getDiscounts(
