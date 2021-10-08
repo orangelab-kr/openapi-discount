@@ -1,0 +1,19 @@
+{
+  "REQUIRED_ACCESS_KEY": "This service requires authentication.",
+  "EXPIRED_ACCESS_KEY": "Your access token has expired.",
+  "PERMISSION_DENIED": "You do not have permission. (%s)",
+  "REQUIRED_LOGIN": "This service requires a login.",
+  "INVALID_ERROR": "An unknown error has occurred.",
+  "FAILED_VALIDATE": "Please enter the correct information.",
+  "INVALID_API": "Invalid API address.",
+  "EXPIRED_DISCOUNT": "Discount has expired and cannot be used.",
+  "ALREADY_USED_DISCOUNT": "The discount has already been used.",
+  "ALREADY_USING_DISCOUMT": "Discount already in use.",
+  "DISABLED_DISCOUNT_GROUP": "This discount group is not available.",
+  "LIMIT_EXCESS_DISCOUNT_GROUP": "The number of issuances of the discount group has been exceeded.",
+  "CANNOT_CANCEL_DISCOUNT": "Discounts that have already been used or have expired cannot be cancelled.",
+  "INVALID_DISCOUNT_INFO": "You must enter either a percentage amount, a static amount, or a static time.",
+  "EXISTS_DISCOUNT_GROUP_NAME": "A discount group with the same name already exists.",
+  "CANNOT_FIND_DISCOUNT_GROUP": "The discount group does not exist.",
+  "CANNOT_FIND_DISCOUNT": "Discount does not exist."
+}

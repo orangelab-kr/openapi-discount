@@ -1,13 +1,6 @@
-import {
-  Database,
-  InternalClient,
-  InternalError,
-  Joi,
-  OPCODE,
-  PATTERN,
-} from '../tools';
 import { DiscountGroupModel, Prisma } from '@prisma/client';
 import { InternalPlatform, PlatformPermission } from 'openapi-internal-sdk';
+import { Database, InternalClient, Joi, PATTERN, RESULT } from '../tools';
 
 const { prisma } = Database;
 
@@ -18,7 +11,6 @@ export class DiscountGroup {
   ): Promise<DiscountGroupModel | null> {
     const where: Prisma.DiscountGroupModelWhereInput = { discountGroupId };
     if (platform) where.platformId = platform.platformId;
-
     const discountGroup = await prisma.discountGroupModel.findFirst({ where });
     return discountGroup;
   }
@@ -83,20 +75,12 @@ export class DiscountGroup {
       staticMinuteDiscount === undefined &&
       discountGroup.staticMinuteDiscount === null
     ) {
-      throw new InternalError(
-        '비율 금액, 정적 금액, 정적 시간 중 하나를 입력해야 합니다.',
-        OPCODE.ERROR
-      );
+      throw RESULT.INVALID_DISCOUNT_INFO();
     }
 
     if (name && name !== discountGroup.name) {
       const exists = await DiscountGroup.getDiscountGroupByName(name);
-      if (exists) {
-        throw new InternalError(
-          '해당 이름과 동일한 할인 그룹이 존재합니다.',
-          OPCODE.ALREADY_EXISTS
-        );
-      }
+      if (exists) throw RESULT.EXISTS_DISCOUNT_GROUP_NAME();
     }
 
     if (platformId && platformId !== discountGroup.platformId) {
@@ -134,13 +118,7 @@ export class DiscountGroup {
       platform
     );
 
-    if (!discountGroup) {
-      throw new InternalError(
-        '해당 할인 그룹은 존재하지 않습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!discountGroup) throw RESULT.CANNOT_FIND_DISCOUNT_GROUP();
     return discountGroup;
   }
 
@@ -169,9 +147,7 @@ export class DiscountGroup {
     const { take, skip, search, orderByField, orderBySort, platformId } =
       await schema.validateAsync(props);
     const where: Prisma.DiscountGroupModelWhereInput = { platformId };
-    const orderBy: Prisma.DiscountGroupModelOrderByInput = {
-      [orderByField]: orderBySort,
-    };
+    const orderBy = { [orderByField]: orderBySort };
 
     if (search) {
       where.OR = [
@@ -240,10 +216,7 @@ export class DiscountGroup {
       staticPriceDiscount === undefined &&
       staticMinuteDiscount === undefined
     ) {
-      throw new InternalError(
-        '비율 금액, 정적 금액, 정적 시간 중 하나를 입력해야 합니다.',
-        OPCODE.ERROR
-      );
+      throw RESULT.INVALID_DISCOUNT_INFO();
     }
 
     const [exists] = await Promise.all([
@@ -253,13 +226,7 @@ export class DiscountGroup {
       ]).getPlatform(platformId),
     ]);
 
-    if (exists) {
-      throw new InternalError(
-        '해당 이름과 동일한 할인 그룹이 존재합니다.',
-        OPCODE.ALREADY_EXISTS
-      );
-    }
-
+    if (exists) throw RESULT.EXISTS_DISCOUNT_GROUP_NAME();
     const discountGroup = await prisma.discountGroupModel.create({
       data: {
         enabled,

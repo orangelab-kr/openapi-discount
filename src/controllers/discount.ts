@@ -1,8 +1,7 @@
-import { DiscountGroup, InternalError, Joi, OPCODE, PATTERN } from '..';
 import { DiscountGroupModel, DiscountModel, Prisma } from '@prisma/client';
-
-import { Database } from '../tools';
 import dayjs from 'dayjs';
+import { DiscountGroup, Joi, PATTERN } from '..';
+import { Database, RESULT } from '../tools';
 
 const { prisma } = Database;
 
@@ -38,10 +37,7 @@ export class Discount {
       discountGroup: { discountGroupId },
     };
 
-    const orderBy: Prisma.DiscountModelOrderByInput = {
-      [orderByField]: orderBySort,
-    };
-
+    const orderBy = { [orderByField]: orderBySort };
     if (search) where.discountId = { contains: search };
     if (!showUsed) where.lockedAt = null;
     const [total, discounts] = await prisma.$transaction([
@@ -71,13 +67,7 @@ export class Discount {
     discountId: string
   ): Promise<DiscountModel> {
     const discount = await Discount.getDiscount(discountGroup, discountId);
-    if (!discount) {
-      throw new InternalError(
-        '해당 할인은 존재하지 않습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!discount) throw RESULT.CANNOT_FIND_DISCOUNT();
     return discount;
   }
 
@@ -96,22 +86,12 @@ export class Discount {
       lockedAt &&
       discount.expiredAt &&
       dayjs(lockedAt).isAfter(dayjs(discount.expiredAt))
-    ) {
-      throw new InternalError(
-        '할인이 만료되어 사용할 수 없습니다.',
-        OPCODE.ERROR
-      );
-    }
+    )
+      throw RESULT.EXPIRED_DISCOUNT();
 
     const { discountId } = discount;
-    if (discount.usedAt && usedAt) {
-      throw new InternalError('이미 사용한 할인입니다.', OPCODE.ERROR);
-    }
-
-    if (discount.lockedAt && lockedAt) {
-      throw new InternalError('이미 사용중인 할인입니다.', OPCODE.ERROR);
-    }
-
+    if (discount.usedAt && usedAt) throw RESULT.ALREADY_USED_DISCOUNT();
+    if (discount.lockedAt && lockedAt) throw RESULT.ALREADY_USING_DISCOUMT();
     const { discountGroupId } = discountGroup;
     await prisma.discountModel.updateMany({
       where: { discountId, discountGroup: { discountGroupId } },
@@ -125,15 +105,9 @@ export class Discount {
     const { discountGroupId, enabled, remainingCount, validity } =
       discountGroup;
 
-    if (!enabled) {
-      throw new InternalError('사용할 수 없는 할인 그룹입니다.', OPCODE.ERROR);
-    }
-
+    if (!enabled) throw RESULT.DISABLED_DISCOUNT_GROUP();
     if (remainingCount !== null && remainingCount <= 0) {
-      throw new InternalError(
-        '할인 그룹의 발급 횟수를 초과하였습니다.',
-        OPCODE.EXCESS_LIMITS
-      );
+      throw RESULT.LIMIT_EXCESS_DISCOUNT_GROUP();
     }
 
     const data: Prisma.DiscountModelCreateInput = {
@@ -158,10 +132,7 @@ export class Discount {
       lockedAt ||
       (expiredAt && dayjs(expiredAt).isBefore(dayjs()))
     ) {
-      throw new InternalError(
-        '이미 사용되었거나 만료된 할인은 취소할 수 없습니다.',
-        OPCODE.ERROR
-      );
+      throw RESULT.CANNOT_CANCEL_DISCOUNT();
     }
 
     await DiscountGroup.increaseDiscountGroupRemainingCount(discountGroup);

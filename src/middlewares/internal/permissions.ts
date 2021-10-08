@@ -1,4 +1,4 @@
-import { Callback, InternalError, OPCODE, Wrapper } from '../..';
+import { WrapperCallback, RESULT, Wrapper } from '../..';
 
 export enum PERMISSION {
   DISCOUNT_GROUP_LIST,
@@ -14,13 +14,12 @@ export enum PERMISSION {
   DISCOUNT_DELETE,
 }
 
-export function InternalPermissionMiddleware(permission: PERMISSION): Callback {
+export function InternalPermissionMiddleware(
+  permission: PERMISSION
+): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     if (!req.internal.prs[permission]) {
-      throw new InternalError(
-        `${PERMISSION[permission]} 권한이 없습니다.`,
-        OPCODE.ACCESS_DENIED
-      );
+      throw RESULT.PERMISSION_DENIED({ args: [PERMISSION[permission]] });
     }
 
     await next();

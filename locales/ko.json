@@ -1,0 +1,19 @@
+{
+  "REQUIRED_ACCESS_KEY": "인증이 필요한 서비스입니다.",
+  "EXPIRED_ACCESS_KEY": "액세스 토큰이 만료되었습니다.",
+  "PERMISSION_DENIED": "권한이 없습니다. (%s)",
+  "REQUIRED_LOGIN": "로그인이 필요한 서비스입니다.",
+  "INVALID_ERROR": "알 수 없는 오류가 발생하였습니다.",
+  "FAILED_VALIDATE": "올바른 정보를 입력해주세요.",
+  "INVALID_API": "잘못된 API 주소입니다.",
+  "EXPIRED_DISCOUNT": "할인이 만료되어 사용할 수 없습니다.",
+  "ALREADY_USED_DISCOUNT": "이미 사용한 할인입니다.",
+  "ALREADY_USING_DISCOUMT": "이미 사용 중인 할인입니다.",
+  "DISABLED_DISCOUNT_GROUP": "사용할 수 없는 할인 그룹입니다.",
+  "LIMIT_EXCESS_DISCOUNT_GROUP": "할인 그룹의 발급 횟수를 초과하였습니다.",
+  "CANNOT_CANCEL_DISCOUNT": "이미 사용되었거나 만료된 할인은 취소할 수 없습니다.",
+  "INVALID_DISCOUNT_INFO": "비율 금액, 정적 금액, 정적 시간 중 하나를 입력해야 합니다.",
+  "EXISTS_DISCOUNT_GROUP_NAME": "이미 동일한 이름의 할인 그룹이 존재합니다.",
+  "CANNOT_FIND_DISCOUNT_GROUP": "할인 그룹이 존재하지 않습니다.",
+  "CANNOT_FIND_DISCOUNT": "할인이 존재하지 않습니다."
+}

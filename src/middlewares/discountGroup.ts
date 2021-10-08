@@ -1,15 +1,9 @@
-import { Callback, DiscountGroup, InternalError, OPCODE, Wrapper } from '..';
+import { DiscountGroup, RESULT, Wrapper, WrapperCallback } from '..';
 
-export function DiscountGroupMiddleware(): Callback {
+export function DiscountGroupMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const { discountGroupId } = req.params;
-    if (!discountGroupId) {
-      throw new InternalError(
-        '해당 할인 그룹은 존재하지 않습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!discountGroupId) throw RESULT.CANNOT_FIND_DISCOUNT_GROUP();
     const { platform } = req.loggined;
     req.discountGroup = await DiscountGroup.getDiscountGroupOrThrow(
       discountGroupId,

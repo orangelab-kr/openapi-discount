@@ -3,9 +3,9 @@ import {
   clusterInfo,
   getDiscountGroupRouter,
   getInternalRouter,
-  InternalError,
   InternalMiddleware,
-  OPCODE,
+  registerSentry,
+  RESULT,
   Wrapper,
 } from '..';
 
@@ -14,18 +14,14 @@ export * from './internal';
 
 export function getRouter(): Application {
   const router = express();
-  InternalError.registerSentry(router);
+  registerSentry(router);
 
   router.use('/internal', InternalMiddleware(), getInternalRouter());
   router.use('/discountGroups', getDiscountGroupRouter());
-
   router.get(
     '/',
-    Wrapper(async (_req, res) => {
-      res.json({
-        opcode: OPCODE.SUCCESS,
-        ...clusterInfo,
-      });
+    Wrapper(async () => {
+      throw RESULT.SUCCESS({ details: clusterInfo });
     })
   );
 

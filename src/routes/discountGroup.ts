@@ -1,14 +1,13 @@
+import { Router } from 'express';
 import {
   Discount,
   DiscountGroup,
   DiscountGroupMiddleware,
   DiscountMiddleware,
   PlatformMiddleware,
+  RESULT,
   Wrapper,
 } from '..';
-
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 
 export function getDiscountGroupRouter(): Router {
   const router = Router();
@@ -19,14 +18,14 @@ export function getDiscountGroupRouter(): Router {
       permissionIds: ['discountGroups.list'],
       final: true,
     }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { platformId } = req.loggined.platform;
       const { total, discountGroups } = await DiscountGroup.getDiscountGroups({
         ...req.query,
         platformId,
       });
 
-      res.json({ opcode: OPCODE.SUCCESS, discountGroups, total });
+      throw RESULT.SUCCESS({ details: { discountGroups, total } });
     })
   );
 
@@ -37,14 +36,14 @@ export function getDiscountGroupRouter(): Router {
       final: true,
     }),
     DiscountGroupMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discountGroup, query } = req;
       const { total, discounts } = await Discount.getDiscounts(
         discountGroup,
         query
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, discountGroup, discounts, total });
+      throw RESULT.SUCCESS({ details: { discountGroup, discounts, total } });
     })
   );
 
@@ -55,10 +54,10 @@ export function getDiscountGroupRouter(): Router {
       final: true,
     }),
     DiscountGroupMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discountGroup } = req;
       const discount = await Discount.createDiscount(discountGroup);
-      res.json({ opcode: OPCODE.SUCCESS, discount });
+      throw RESULT.SUCCESS({ details: { discount } });
     })
   );
 
@@ -70,9 +69,9 @@ export function getDiscountGroupRouter(): Router {
     }),
     DiscountGroupMiddleware(),
     DiscountMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discount } = req;
-      res.json({ opcode: OPCODE.SUCCESS, discount });
+      throw RESULT.SUCCESS({ details: { discount } });
     })
   );
 
@@ -84,10 +83,10 @@ export function getDiscountGroupRouter(): Router {
     }),
     DiscountGroupMiddleware(),
     DiscountMiddleware({ throwIfIsUsed: true }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discount, discountGroup } = req;
       await Discount.deleteDiscount(discountGroup, discount);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

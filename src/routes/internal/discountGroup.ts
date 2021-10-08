@@ -1,19 +1,18 @@
+import { Router } from 'express';
 import {
   Discount,
   DiscountGroup,
   InternalDiscountMiddleware,
+  RESULT,
   Wrapper,
 } from '../..';
-
-import { OPCODE } from 'openapi-internal-sdk';
-import { Router } from 'express';
 
 export function getInternalDiscountGroupRouter(): Router {
   const router = Router();
 
   router.get(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const {
         internal: { discountGroup },
         query,
@@ -24,63 +23,63 @@ export function getInternalDiscountGroupRouter(): Router {
         query
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, discountGroup, discounts, total });
+      throw RESULT.SUCCESS({ details: { discountGroup, discounts, total } });
     })
   );
 
   router.post(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { body, internal } = req;
       await DiscountGroup.modifyDiscountGroup(internal.discountGroup, body);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.get(
     '/generate',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discountGroup } = req.internal;
       const discount = await Discount.createDiscount(discountGroup);
-      res.json({ opcode: OPCODE.SUCCESS, discount });
+      throw RESULT.SUCCESS({ details: { discount } });
     })
   );
 
   router.get(
     '/:discountId',
     InternalDiscountMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discount } = req.internal;
-      res.json({ opcode: OPCODE.SUCCESS, discount });
+      throw RESULT.SUCCESS({ details: { discount } });
     })
   );
 
   router.post(
     '/:discountId',
     InternalDiscountMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discount, discountGroup } = req.internal;
       await Discount.modifyDiscount(discountGroup, discount, req.body);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.delete(
     '/:discountId',
     InternalDiscountMiddleware({ throwIfIsUsed: true }),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discountGroup, discount } = req.internal;
       await Discount.deleteDiscount(discountGroup, discount);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.delete(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { discountGroup } = req.internal;
       await DiscountGroup.deleteDiscountGroup(discountGroup);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

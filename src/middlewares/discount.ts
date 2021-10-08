@@ -1,10 +1,10 @@
 import dayjs from 'dayjs';
-import { Callback, Discount, InternalError, OPCODE, Wrapper } from '..';
+import { Discount, RESULT, Wrapper, WrapperCallback } from '..';
 
 export function DiscountMiddleware(props?: {
   throwIfIsUsed?: boolean;
   throwIfIsExpired?: boolean;
-}): Callback {
+}): WrapperCallback {
   const { throwIfIsUsed, throwIfIsExpired } = {
     throwIfIsUsed: false,
     throwIfIsExpired: false,
@@ -17,13 +17,7 @@ export function DiscountMiddleware(props?: {
       params: { discountId },
     } = req;
 
-    if (!discountGroup || !discountId) {
-      throw new InternalError(
-        '해당 할인은 존재하지 않습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!discountGroup || !discountId) throw RESULT.CANNOT_FIND_DISCOUNT();
     const discount = await Discount.getDiscountOrThrow(
       discountGroup,
       discountId
@@ -34,19 +28,10 @@ export function DiscountMiddleware(props?: {
       discount.expiredAt &&
       dayjs(discount.expiredAt).isBefore(dayjs())
     ) {
-      throw new InternalError(
-        '만료된 할인은 사용할 수 없습니다.',
-        OPCODE.ERROR
-      );
+      throw RESULT.EXPIRED_DISCOUNT();
     }
 
-    if (throwIfIsUsed && discount.usedAt) {
-      throw new InternalError(
-        '사용된 할인은 사용할 수 없습니다.',
-        OPCODE.ERROR
-      );
-    }
-
+    if (throwIfIsUsed && discount.usedAt) throw RESULT.ALREADY_USED_DISCOUNT();
     req.discount = discount;
     await next();
   });
