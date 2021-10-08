@@ -1,17 +1,17 @@
 import { PlatformPermission } from 'openapi-internal-sdk';
 import { WrapperCallback, InternalClient, Wrapper } from '..';
 
-const platformClient = InternalClient.getPlatform([
-  PlatformPermission.AUTHORIZE_USER,
-  PlatformPermission.AUTHORIZE_ACCESS_KEY,
-]);
-
 export function PlatformMiddleware(
   props: {
     permissionIds?: string[];
     final?: boolean;
   } = {}
 ): WrapperCallback {
+  const platformClient = InternalClient.getPlatform([
+    PlatformPermission.AUTHORIZE_USER,
+    PlatformPermission.AUTHORIZE_ACCESS_KEY,
+  ]);
+
   const { permissionIds, final } = {
     permissionIds: [],
     final: false,
