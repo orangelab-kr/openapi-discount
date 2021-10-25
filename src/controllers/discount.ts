@@ -111,7 +111,7 @@ export class Discount {
       discountGroup: { connect: { discountGroupId } },
     };
 
-    if (validity) data.expiredAt = dayjs().add(validity).toDate();
+    if (validity) data.expiredAt = dayjs().add(validity, 's').toDate();
     const include: Prisma.DiscountModelInclude = { discountGroup: true };
     const discount = await prisma.discountModel.create({ data, include });
     await DiscountGroup.decreseDiscountGroupRemainingCount(discountGroup);
