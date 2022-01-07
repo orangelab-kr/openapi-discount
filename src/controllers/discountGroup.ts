@@ -83,7 +83,7 @@ export class DiscountGroup {
 
     if (platformId && platformId !== discountGroup.platformId) {
       await InternalClient.getPlatform([
-        PlatformPermission.PLATFORMS_VIEW,
+        PlatformPermission.PLATFORM_VIEW,
       ]).getPlatform(platformId);
     }
 
@@ -220,7 +220,7 @@ export class DiscountGroup {
     const [exists] = await Promise.all([
       DiscountGroup.getDiscountGroupByName(name),
       InternalClient.getPlatform([
-        PlatformPermission.PLATFORMS_VIEW,
+        PlatformPermission.PLATFORM_VIEW,
       ]).getPlatform(platformId),
     ]);
 

@@ -8,8 +8,8 @@ export function PlatformMiddleware(
   } = {}
 ): WrapperCallback {
   const platformClient = InternalClient.getPlatform([
-    PlatformPermission.AUTHORIZE_USER,
-    PlatformPermission.AUTHORIZE_ACCESS_KEY,
+    PlatformPermission.PLATFORM_USER_AUTHORIZE,
+    PlatformPermission.PLATFORM_ACCESS_KEY_AUTHORIZE,
   ]);
 
   const { permissionIds, final } = {
